@@ -13,14 +13,15 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 # Replace with inputs you want to test with, it will automatically
 # interpolate any tasks and agents information
 
+
 def run():
     """
     Run the crew.
     """
     inputs = {
-        'motion': 'There needs to be strict laws to regulate LLMs',
+        "motion": "Elden Ring is the best souls like game of all time",
     }
-    
+
     try:
         result = Debate().crew().kickoff(inputs=inputs)
         print(result.raw)

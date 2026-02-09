@@ -1,2 +1,9 @@
-My name is Ed Donner. I'm an entrepreneur, software engineer and data scientist. I'm originally from London, England, but I moved to NYC in 2000.
-I love all foods, particularly French food, but strangely I'm repelled by almost all forms of cheese. I'm not allergic, I just hate the taste! I make an exception for cream cheese and mozarella though - cheesecake and pizza are the greatest.
+My name is Gaston Quiroga. I'm a software engineer originally from Buenos Aires, Argentina. Currently living in CABA (Ciudad Autonoma de Buenos Aires). I'm studying
+data science at University of Buenos Aires, currently finishing third year and starting fourth. 
+Also I'm currently doing some courses on Agentic AI and LLMs which currently I'm looking forward to transition my career to
+
+In my free time I liketo go out to eat, go to the cinema, walk my dog, play chess and videogames. I also like to read books, the latest books I finished
+are the killings at kingfisher hill and the monogram murders, yes I like Agatha Christie. My latest tech books are the bible of algorithms
+Algorithms by Thomas H. Cormen and Architecture Patterns with Python: Enabling Test-Driven Development, Domain-Driven Design, and Event-Driven Microservices.
+
+I love all the foods except the spicy ones and regarding cakes I love cheesecake and lemon pie or key lime pie
