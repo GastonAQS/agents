@@ -1,0 +1,125 @@
+architecture_task:
+  description: >
+    Analyze the requirements and break the app into concrete parts that can be implemented independently.
+    Requirements: {requirements}
+    Produce a build plan with:
+    1) module list with ownership and responsibilities,
+    2) function/class contracts for each module,
+    3) data flow and dependency graph,
+    4) integration sequence,
+    5) acceptance criteria.
+    Use module names:
+    - {module_name} for backend logic
+    - app.py for frontend
+    - main.py for service wiring helpers consumed by app.py
+    Critical rule: app.py is the only runtime entrypoint.
+    Do not define launch entrypoints in backend.py or main.py.
+    Return a structured architecture object that can be validated by a Pydantic model.
+  expected_output: >
+    A structured architecture plan with: app summary, modules with interfaces/dependencies,
+    integration sequence, and acceptance criteria.
+  agent: architect
+  output_file: output/architecture.md
+
+backend_task:
+  description: >
+    Implement the backend module {module_name} from the architecture.
+    Scope:
+    - Implement core business logic and data models.
+    - Expose clean interfaces referenced by the architecture.
+    - Ensure every symbol imported from backend in app.py/main.py exists exactly.
+    - Keep code self-contained and testable.
+    Do not write UI code in this task.
+  expected_output: >
+    A complete Python backend module named {module_name}.
+    IMPORTANT: Output ONLY raw Python code without markdown or code fences.
+  agent: backend_engineer
+  context:
+    - architecture_task
+  output_file: output/{module_name}
+
+frontend_task:
+  description: >
+    Implement app.py using only the contracts from the architecture and backend module {module_name}.
+    Scope:
+    - Build a minimal UI that exercises the main user flow.
+    - Keep logic in backend and UI orchestration in frontend.
+    - Import and use the backend module from the same directory.
+    - app.py must be the only launch entrypoint.
+    - Use non-relative imports only (never `from .x import y`).
+    - Only import backend symbols that are explicitly implemented in {module_name}.
+  expected_output: >
+    A Python module app.py that runs the frontend and uses {module_name}.
+    IMPORTANT: Output ONLY raw Python code without markdown or code fences.
+  agent: frontend_engineer
+  context:
+    - architecture_task
+    - backend_task
+  output_file: output/app.py
+
+integration_task:
+  description: >
+    Integrate all produced parts into service wiring code in main.py consumed by app.py.
+    Inputs available:
+    - architecture document
+    - backend module {module_name}
+    - frontend app.py
+    Scope:
+    - Resolve import paths and interface mismatches.
+    - Compose modules into frontend-consumable services/facades.
+    - app.py is the only runtime entrypoint for launching Gradio.
+    - main.py must not launch the UI.
+    - Use non-relative imports only (never `from .x import y`).
+    - Ensure import contract consistency:
+      if app.py/main.py contains `from backend_module import X`, backend module must define `X`.
+  expected_output: >
+    A Python integration module main.py that exposes service wiring for app.py.
+    It must not call app.launch().
+    It must be importable together with backend module without symbol errors.
+    IMPORTANT: Output ONLY raw Python code without markdown or code fences.
+  agent: integration_engineer
+  context:
+    - architecture_task
+    - backend_task
+    - frontend_task
+  output_file: output/main.py
+
+qa_strategy_task:
+  description: >
+    Produce a test strategy for the assembled app in strict markdown (not JSON).
+    Include one critical path and at least two edge cases.
+    Define concrete test cases with objective, inputs/setup, and expected behavior.
+    Follow this exact template:
+    ## Critical Path
+    - ...
+    ## Edge Cases
+    - ...
+    - ...
+    ## Test Cases
+    - Name: ...
+      Objective: ...
+      Inputs: ...
+      Expected: ...
+  expected_output: >
+    A markdown QA strategy following the required section template.
+  agent: qa_engineer
+  context:
+    - architecture_task
+    - integration_task
+  output_file: output/qa_strategy.md
+
+test_task:
+  description: >
+    Write integration-focused tests validating the behavior of the assembled app.
+    Test the critical path and at least 2 edge cases.
+    Use the generated modules in output/ and the QA strategy context.
+    Focus on app behavior and implement the strategy as pytest tests.
+  expected_output: >
+    A pytest module test_{module_name} that validates backend behavior and integration contracts.
+    IMPORTANT: Output ONLY raw Python code without markdown or code fences.
+  agent: qa_engineer
+  context:
+    - backend_task
+    - integration_task
+    - qa_strategy_task
+  output_file: output/test_{module_name}

@@ -1,0 +1,35 @@
+{
+  "accounts": {
+    "pepe": {
+      "cash": 210.0,
+      "positions": {
+        "AAPL": 1.0
+      },
+      "transactions": [
+        {
+          "type": "deposit",
+          "amount": 100.0
+        },
+        {
+          "type": "deposit",
+          "amount": 100.0
+        },
+        {
+          "type": "deposit",
+          "amount": 100.0
+        },
+        {
+          "type": "deposit",
+          "amount": 100.0
+        },
+        {
+          "type": "buy",
+          "symbol": "AAPL",
+          "quantity": 1.0,
+          "price": 190.0
+        }
+      ],
+      "cost_basis": 190.0
+    }
+  }
+}
